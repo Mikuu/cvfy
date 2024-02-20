@@ -183,8 +183,12 @@
                 </span>
               </div>
               <ul v-if="job.summaryArr && job.summaryArr.length > 1" class="cv__list">
-                <li v-for="(line, index) in job.summaryArr" :key="index">
-                  {{ line }}
+                <li
+                  v-for="(line, index) in job.summaryArr"
+                  :key="index"
+                  :class="getLineClass(line)"
+                >
+                  {{ line || '\u00A0' }}
                 </li>
               </ul>
               <p v-else class="font-light">
@@ -265,8 +269,12 @@
                 </span>
               </div>
               <ul v-if="project.summaryArr && project.summaryArr.length > 1" class="cv__list">
-                <li v-for="(line, index) in project.summaryArr" :key="index">
-                  {{ line }}
+                <li
+                  v-for="(line, index) in project.summaryArr"
+                  :key="index"
+                  :class="getLineClass(line)"
+                >
+                  {{ line || '\u00A0' }}
                 </li>
               </ul>
               <p v-else class="font-light">
@@ -391,6 +399,15 @@ export default defineComponent({
       }
     });
 
+    const getLineClass = computed(function () {
+      return function (line: any) {
+        return {
+          'with-dot': line.trim().length > 0,
+          'without-dot': line.trim().length === 0,
+        };
+      };
+    });
+
     return {
       formSettings,
       isLoading,
@@ -404,6 +421,7 @@ export default defineComponent({
       cv,
       cvMain,
       pages,
+      getLineClass,
     };
   },
 });
@@ -563,10 +581,13 @@ p {
     li:first-child {
       @apply mt-1;
     }
-    li::before {
+    .with-dot::before {
       content: '\2022';
-      padding-right: 0.4em;
+      padding-right: 0.2em;
       color: var(--primary);
+    }
+    .without-dot::before {
+      content: none;
     }
   }
 
